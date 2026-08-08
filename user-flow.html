@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raptor · AI Audience Builder — User Flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#17233E; --primary-strong:#15213B;
+    --surface:#FFFFFF; --surface-muted:#F9F9F9;
+    --surface-variant:#D5D7D9; --surface-active:#EAEAEC;
+    --on-surface:#202020; --outline:#7A7A7A;
+    --neutral-100:#F5F5F5; --neutral-200:#ECEDEE; --neutral-300:#E7E7E7;
+    --accent:#C80046; --danger:#7B144B; --purple:#8C3CDA;
+    --text-muted:#8A93A8;
+    --radius-sm:5px; --radius-md:8px; --radius-none:4px;
+    --shadow-1:0 2px 8px rgba(23,35,62,.08);
+    --shadow-2:0 8px 24px rgba(23,35,62,.16);
+    --poppins:'Poppins',sans-serif; --roboto:'Roboto',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--surface-muted);font-family:var(--roboto);color:var(--on-surface);}
+
+  /* top-bar */
+  .topbar{background:var(--primary);color:#fff;height:64px;display:flex;align-items:center;
+    padding:0 40px;gap:14px;position:sticky;top:0;z-index:10;box-shadow:var(--shadow-1)}
+  .logo{display:inline-block}
+  .topbar .name{font-family:var(--poppins);font-weight:500;font-size:16px}
+  .topbar .sub{font-family:var(--poppins);font-weight:300;font-size:11px;opacity:.7;margin-left:auto}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:40px 48px 120px}
+  h1{font-family:var(--poppins);font-weight:700;font-size:20px;color:var(--primary);margin-bottom:6px}
+  .lede{font-family:var(--poppins);font-weight:400;font-size:14px;color:var(--outline);margin-bottom:28px;max-width:720px;line-height:1.5}
+
+  /* legend */
+  .legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:36px}
+  .chip{font-family:var(--poppins);font-weight:600;font-size:11px;color:#fff;
+    padding:6px 12px;border-radius:var(--radius-none);display:inline-flex;gap:7px;align-items:center}
+  .chip .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.85)}
+  .c-s1{background:var(--purple)} .c-s2{background:var(--accent)} .c-s3{background:var(--primary)}
+  .c-asis{background:var(--outline)}
+
+  /* flow node */
+  .node{background:var(--surface);border:1px solid var(--surface-variant);border-radius:var(--radius-md);
+    padding:16px 20px;box-shadow:var(--shadow-1);max-width:620px;margin:0 auto;position:relative}
+  .node .tag{position:absolute;top:-10px;left:16px;font-family:var(--poppins);font-weight:600;
+    font-size:10px;letter-spacing:.04em;color:#fff;padding:3px 8px;border-radius:var(--radius-none)}
+  .node h3{font-family:var(--poppins);font-weight:600;font-size:14px;color:var(--primary);margin-bottom:4px}
+  .node p{font-size:13px;color:var(--outline);line-height:1.45}
+  .node .benefit{margin-top:10px;font-family:var(--roboto);font-size:12px;color:var(--danger);
+    background:#F4E9EF;border-radius:var(--radius-none);padding:6px 10px;display:flex;gap:6px}
+  .node .benefit b{font-weight:500}
+
+  .step{font-family:var(--roboto);font-weight:500;font-size:11px;color:var(--text-muted);
+    text-align:center;margin:0 auto 6px;letter-spacing:.08em}
+
+  /* connectors */
+  .arrow{width:2px;height:34px;background:var(--surface-variant);margin:8px auto;position:relative}
+  .arrow::after{content:"";position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);
+    border:5px solid transparent;border-top-color:var(--surface-variant)}
+  .arrow.lbl::before{content:attr(data-l);position:absolute;left:12px;top:50%;transform:translateY(-50%);
+    white-space:nowrap;font-family:var(--roboto);font-size:11px;color:var(--outline);font-style:italic}
+
+  /* branch row */
+  .branch{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:stretch;max-width:1000px;margin:0 auto}
+  .branch .node{max-width:none;margin:0}
+  .branch-2{grid-template-columns:repeat(2,1fr);max-width:760px}
+
+  /* decision diamond */
+  .decision{max-width:420px;margin:0 auto;background:var(--neutral-100);border:1px dashed var(--outline);
+    border-radius:var(--radius-md);padding:12px 18px;text-align:center;font-family:var(--poppins);
+    font-weight:600;font-size:13px;color:var(--primary)}
+  .decision small{display:block;font-family:var(--roboto);font-weight:400;font-size:11px;color:var(--outline);margin-top:3px}
+
+  /* loop pill */
+  .loop{max-width:620px;margin:8px auto;border:1px dashed var(--purple);background:#F5EDFB;
+    border-radius:var(--radius-md);padding:10px 16px;font-size:12px;color:var(--purple);
+    display:flex;gap:8px;align-items:center;font-family:var(--roboto)}
+
+  /* alert node */
+  .node.alert{border-color:var(--accent);background:#FBEEF3}
+  .node.alert h3{color:var(--accent)}
+
+  .end{background:var(--danger);color:#fff;text-align:center;max-width:420px;margin:0 auto;
+    border-radius:var(--radius-md);padding:14px 20px;box-shadow:var(--shadow-1)}
+  .end h3{font-family:var(--poppins);font-weight:600;font-size:14px;margin-bottom:2px}
+  .end p{font-size:12px;opacity:.85}
+
+  .section-label{font-family:var(--poppins);font-weight:700;font-size:12px;letter-spacing:.1em;
+    color:var(--outline);text-transform:uppercase;text-align:center;margin:34px auto 14px;
+    padding-top:20px;border-top:1px solid var(--surface-variant);max-width:200px}
+
+  .tag-s1{background:var(--purple)} .tag-s2{background:var(--accent)}
+  .tag-s3{background:var(--primary)} .tag-asis{background:var(--outline)} .tag-all{background:var(--danger)}
+
+  .note{max-width:620px;margin:10px auto 0;font-size:12px;color:var(--text-muted);text-align:center;font-style:italic}
+
+  /* explicit yes/no split for optional steps */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:900px;margin:0 auto;align-items:start}
+  .split .col{display:flex;flex-direction:column;align-items:center}
+  .split .col .node{max-width:none;width:100%}
+  .branch-label{font-family:var(--roboto);font-weight:500;font-size:11px;letter-spacing:.06em;
+    padding:4px 12px;border-radius:var(--radius-none);margin-bottom:2px}
+  .branch-label.no{background:var(--neutral-200);color:var(--outline)}
+  .branch-label.yes{background:#FBEEF3;color:var(--accent)}
+  .arrow.short{height:22px;margin:4px auto}
+  .rejoin{font-family:var(--roboto);font-size:11px;color:var(--text-muted);text-align:center;
+    max-width:900px;margin:2px auto 0;font-style:italic}
+  .rejoin-line{width:60%;height:2px;background:var(--surface-variant);margin:14px auto 0;position:relative}
+  .rejoin-line::after{content:"";position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);
+    width:2px;height:16px;background:var(--surface-variant)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <svg class="logo" width="30" height="27" viewBox="0 0 30 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M30 0C28.0385 1.5202 25.9463 2.86533 23.7477 4.01977C22.8249 4.51767 21.8113 5.03111 20.7106 5.5418C16.4019 7.54661 11.8451 8.97269 7.15946 9.78266C6.06971 9.96842 4.95001 10.1207 3.80034 10.2394C2.56475 10.3655 1.29797 10.4477 0 10.4779C1.13202 10.883 2.30189 11.1744 3.49213 11.3476C2.9998 13.4779 3.06416 15.6984 3.67905 17.7969C4.29394 19.8954 5.43883 21.8018 7.00434 23.334C8.56985 24.8662 10.5037 25.973 12.6211 26.5487C14.7385 27.1244 16.9688 27.1497 19.0988 26.6223C21.2289 26.0948 23.1875 25.0322 24.7877 23.536C26.3879 22.0397 27.5762 20.1598 28.2389 18.0758C28.9017 15.9919 29.0169 13.7734 28.5735 11.6325C28.1301 9.49154 27.1429 7.49959 25.7062 5.84694C27.4991 4.18882 28.9566 2.2041 30 0ZM16.0049 14.0089C16.5244 14.0089 17.0323 14.1623 17.4643 14.4497C17.8962 14.7372 18.233 15.1457 18.4319 15.6237C18.6308 16.1017 18.6829 16.6277 18.5817 17.1352C18.4804 17.6427 18.2304 18.1089 17.8632 18.4749C17.496 18.8409 17.028 19.0902 16.5185 19.1914C16.0091 19.2926 15.4809 19.241 15.0008 19.0433C14.5207 18.8455 14.1103 18.5104 13.8214 18.0804C13.5325 17.6503 13.3781 17.1446 13.3778 16.6272C13.3775 16.2835 13.4453 15.943 13.5772 15.6254C13.7091 15.3077 13.9026 15.0191 14.1466 14.7759C14.3906 14.5327 14.6803 14.3398 14.9991 14.2082C15.318 14.0766 15.6597 14.0089 16.0049 14.0089ZM25.9025 14.2135C25.9022 15.6168 25.601 17.0039 25.0192 18.2819C24.4374 19.56 23.5883 20.6996 22.5287 21.6245C21.4691 22.5495 20.2234 23.2385 18.875 23.6454C17.5266 24.0523 16.1064 24.1678 14.7096 23.9842C13.3127 23.8005 11.9713 23.322 10.7751 22.5805C9.57888 21.839 8.55539 20.8517 7.77309 19.6846C6.99079 18.5175 6.4677 17.1974 6.2388 15.8128C6.00991 14.4282 6.08048 13.0108 6.4458 11.6555C7.67649 11.7186 8.90977 11.7122 10.1397 11.6363C9.66041 12.7153 9.49058 13.9054 9.6491 15.0747C9.80762 16.2439 10.2883 17.3466 11.0378 18.2603C11.7872 19.174 12.7762 19.8631 13.895 20.251C15.0138 20.639 16.2186 20.7107 17.3758 20.4581C18.533 20.2055 19.5973 19.6386 20.4507 18.8203C21.304 18.0019 21.9131 16.9641 22.2102 15.8219C22.5073 14.6798 22.481 13.478 22.134 12.3498C21.787 11.2217 21.1331 10.2114 20.2446 9.43093C21.3506 8.94173 22.4098 8.35372 23.4093 7.6741C25.0182 9.47515 25.9057 11.8028 25.9025 14.2135Z" fill="url(#paint0_linear_9370_2812)"/>
+  <defs>
+  <linearGradient id="paint0_linear_9370_2812" x1="30.4021" y1="-2.49461e-06" x2="3.65769" y2="27.3596" gradientUnits="userSpaceOnUse">
+  <stop stop-color="#C80046"/>
+  <stop offset="0.765" stop-color="#8D0031"/>
+  <stop offset="0.958736" stop-color="#620022"/>
+  </linearGradient>
+  </defs>
+  </svg>
+  <span class="name">raptor</span>
+  <span class="sub">AI Audience Builder — User Flow · greyscale structure</span>
+</div>
+
+<div class="wrap">
+  <h1>AI Audience Builder — User Flow</h1>
+  <p class="lede">One screen (chat + live preview), three entry points that interweave. This diagram shows structure and decision points — not visual mockups. Colors follow the Raptor design system only to distinguish scenarios.</p>
+
+  <div class="legend">
+    <span class="chip c-s1"><span class="dot"></span>Scenario 1 · from a product</span>
+    <span class="chip c-s2"><span class="dot"></span>Scenario 2 · AI suggestions</span>
+    <span class="chip c-s3"><span class="dot"></span>Scenario 3 · full chat</span>
+    <span class="chip c-asis"><span class="dot"></span>AS-IS · no AI (out of scope)</span>
+  </div>
+
+  <!-- ENTRY -->
+  <div class="step">ENTRY</div>
+  <div class="node">
+    <span class="tag tag-all">START</span>
+    <h3>Audiences list → “+ Build new Audience”</h3>
+    <p>User opens the existing audiences list and clicks the primary CTA.</p>
+  </div>
+
+  <div class="arrow"></div>
+
+  <div class="node">
+    <span class="tag tag-all">SIDE PANEL</span>
+    <h3>“Build new Audience” — choose how to start</h3>
+    <p>Existing side panel with three cards. We reuse it — no new entry invented.</p>
+    <div class="benefit"><b>Benefit:</b> clear choice of control level; AI is a natural first option, not forced.</div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <div class="branch">
+    <div class="node">
+      <span class="tag tag-all">CARD 1</span>
+      <h3>Build with AI</h3>
+      <p><em>AI assistance.</em> Enters the chat + live-preview screen. Hosts Scenario 2 (suggestions) and Scenario 3 (free chat) together.</p>
+    </div>
+    <div class="node">
+      <span class="tag tag-s2">CARD 2</span>
+      <h3>Predefined audiences</h3>
+      <p><em>Quick start.</em> 9 CLV templates + 6 new AI-generated cards. Selecting one opens the same chat, pre-filled.</p>
+    </div>
+    <div class="node">
+      <span class="tag tag-asis">CARD 3</span>
+      <h3>Build manually</h3>
+      <p><em>Full control.</em> Pure AS-IS rule builder. Zero AI. Out of redesign scope — shown for completeness.</p>
+    </div>
+  </div>
+
+  <div class="arrow lbl" data-l="Card 1 & Card 2 converge → chat screen"></div>
+
+  <!-- CHAT SCREEN -->
+  <div class="section-label">Chat screen</div>
+
+  <div class="node">
+    <span class="tag tag-all">ONE SCREEN</span>
+    <h3>Chat (left) + Live Audience Preview (right)</h3>
+    <p>The core surface. Three ways to begin the conversation:</p>
+  </div>
+
+  <div class="arrow"></div>
+
+  <div class="branch">
+    <div class="node">
+      <span class="tag tag-s3">START A</span>
+      <h3>Empty chat</h3>
+      <p>“Describe the audience you want…”. Free-form (Scenario 3).</p>
+    </div>
+    <div class="node">
+      <span class="tag tag-s2">START B</span>
+      <h3>AI suggestions</h3>
+      <p>Chat opens with pre-built audience suggestions (Scenario 2). User picks one to refine.</p>
+    </div>
+    <div class="node">
+      <span class="tag tag-s1">START C</span>
+      <h3>From a product</h3>
+      <p>User pastes a link / uploads an image / describes a product (Scenario 1).</p>
+    </div>
+  </div>
+
+  <div class="note">Scenario 2’s suggestions solve the blank-canvas problem right at the start.</div>
+
+  <div class="arrow"></div>
+
+  <div class="node">
+    <span class="tag tag-all">1</span>
+    <h3>AI analyses the input</h3>
+    <p>AI proposes an initial audience with sensible default assumptions shown as editable chips in the preview.</p>
+  </div>
+
+  <div class="arrow"></div>
+
+  <div class="decision">
+    Is the input ambiguous?
+    <small>e.g. “plates” = dinnerware or vinyl? · buyers or browsers?</small>
+  </div>
+
+  <div class="arrow short"></div>
+
+  <div class="split">
+    <div class="col">
+      <span class="branch-label yes">YES → clarify</span>
+      <div class="arrow short"></div>
+      <div class="node">
+        <span class="tag tag-s1">CLARIFY · optional</span>
+        <h3>AI asks a focused follow-up</h3>
+        <p><b>Layer A — product:</b> scope, which attributes matter, semantic expansions.<br>
+           <b>Layer B — audience:</b> behaviour (buy vs visit), proximity threshold, time window.</p>
+        <div class="benefit"><b>Benefit:</b> AI asks only what’s unclear — low effort for non-technical marketers.</div>
+      </div>
+    </div>
+    <div class="col">
+      <span class="branch-label no">NO → skip</span>
+      <div class="arrow short"></div>
+      <div class="node" style="border-style:dashed;background:var(--neutral-100)">
+        <span class="tag" style="background:var(--outline)">SKIP</span>
+        <h3>No question needed</h3>
+        <p>AI keeps its default assumptions and goes straight to the live preview.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="rejoin-line"></div>
+  <div class="rejoin">both paths rejoin →</div>
+
+  <div class="arrow short"></div>
+
+  <div class="node">
+    <span class="tag tag-all">2 · LIVE</span>
+    <h3>Live preview recalculates</h3>
+    <p>Audience size, % of total population, criteria chips and reasoning update after every message. Changed values highlight.</p>
+    <div class="benefit"><b>Benefit:</b> replaces manual “Save &amp; Refresh” (static) with a live preview — user sees the audience form in real time.</div>
+  </div>
+
+  <div class="loop">↻ Loop: user sends another message → clarify (only if needed) → preview updates again.</div>
+
+  <div class="arrow"></div>
+
+  <div class="decision">
+    Audience size?
+    <small>OK · vs · 0 / too few</small>
+  </div>
+
+  <div class="arrow short"></div>
+
+  <div class="split">
+    <div class="col">
+      <span class="branch-label yes">0 / TOO FEW</span>
+      <div class="arrow short"></div>
+      <div class="node alert">
+        <span class="tag tag-s1">EDGE CASE · optional</span>
+        <h3>AI proposes loosening the criteria</h3>
+        <p>User accepts the suggestion — <b>or</b> creates the audience anyway. A near-empty audience proceeds <b>with a warning alert ⚠</b>.</p>
+        <div class="benefit"><b>Benefit:</b> user never gets stuck; system guides but keeps them in control.</div>
+      </div>
+    </div>
+    <div class="col">
+      <span class="branch-label no">SIZE OK</span>
+      <div class="arrow short"></div>
+      <div class="node" style="border-style:dashed;background:var(--neutral-100)">
+        <span class="tag" style="background:var(--outline)">CONTINUE</span>
+        <h3>Proceed directly</h3>
+        <p>Size looks good — straight to naming, no alert.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="rejoin-line"></div>
+  <div class="rejoin">both paths rejoin →</div>
+
+  <div class="arrow short"></div>
+
+  <div class="node">
+    <span class="tag tag-all">3</span>
+    <h3>AI suggests name + description</h3>
+    <p>Pre-filled, editable — respects company naming conventions. User approves or edits.</p>
+    <div class="benefit"><b>Benefit:</b> saves work but keeps control — AI proposes, human confirms.</div>
+  </div>
+
+  <div class="arrow"></div>
+
+  <div class="node">
+    <span class="tag tag-all">4 · DONE</span>
+    <h3>“Your audience is ready”</h3>
+    <p>Clear completion state: summary card of the audience + CTA chip linking to it.</p>
+    <div class="benefit"><b>Benefit:</b> explicit end signal — the user knows the AI has finished.</div>
+  </div>
+
+  <div class="arrow lbl" data-l="Save"></div>
+
+  <div class="end">
+    <h3>Back to Audiences list</h3>
+    <p>New row added, tagged “Ai created” — consistent with the existing badge.</p>
+  </div>
+
+  <!-- open questions -->
+  <div class="section-label" style="max-width:320px">Not yet addressed</div>
+  <div class="node" style="border-style:dashed">
+    <span class="tag" style="background:var(--text-muted)">OPEN</span>
+    <h3>Parked for later</h3>
+    <p>• Editing an existing AI-created audience through chat (re-entering the flow).<br>
+       • Chat available from anywhere (e.g. inside Actito) — future goal.<br>
+       • Multiple Vector Space models / model selector in the assistant.</p>
+  </div>
+
+</div>
+</body>
+</html>
